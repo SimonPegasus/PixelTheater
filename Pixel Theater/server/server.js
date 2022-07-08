@@ -26,11 +26,14 @@ server.on('error', (err) => { // On error
 
 
 io.on('connection', (sock) => { // Called on each client connection
-  sock.on('initCL', (data) => {
-    console.log(data); // Placeholder, supposed to do stuff with the data and send data back to all clients such as location data, etc.
+  sock.on('initCL', () => {
+    sock.emit('CLid', sock.id); // Give player their id
+  });
+  sock.on('requestMovement', (d) => { // When a player requests movement
+    sock.emit('receiveMovement', d); // Accept movement and send to all players for updates
   });
 });
 
-setInterval(() => { // Send ticks to clients, 20 TPS
+setInterval(() => { // Send ticks to clients, 100 TPS
   io.emit('tick');
-}, 50);
+}, 10);
