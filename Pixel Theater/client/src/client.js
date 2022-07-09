@@ -31,17 +31,17 @@ sock.on('tick', () => { // On each server tick
 sock.on('receiveMovement', (d) => { // On player movement
   if (player.x-player.w <= 0) {player.x = player.w}; // Out of bounds
   if (player.y-player.h <= 0) {player.y = player.h}; // Out of bounds
-  if (player.x+player.w >= canvas.width) {player.x = canvas.width-player.w}; // Out of bounds
-  if (player.y+player.h >= canvas.height) {player.y = canvas.height-player.h}; // Out of bounds
+  if (player.x+player.w >= canv.width) {player.x = canv.width-player.w}; // Out of bounds
+  if (player.y+player.h >= canv.height) {player.y = canv.height-player.h}; // Out of bounds
 
   if (d[0] == player.id) {
-    if (d[1] == 3) {
+    if (d[1] == 3) { // Down
       player.y += d[2];
-    } else if (d[1] == 1) {
+    } else if (d[1] == 1) { // Up
       player.y -= d[2];
-    } else if (d[1] == 4) {
+    } else if (d[1] == 4) { // Right
       player.x += d[2];
-    } else if (d[1] == 2) {
+    } else if (d[1] == 2) { // Left
       player.x -= d[2];
     }
   } else {
@@ -53,7 +53,7 @@ sock.on('receiveMovement', (d) => { // On player movement
 // Handle clientsided events here / Main
 var c = null;
 const canv = document.querySelector('canvas');
-canv.width = 5000, canv.height = 5000;
+canv.width = 2000, canv.height = 2000;
 var keys = [];
 
 
@@ -66,7 +66,7 @@ window.onload = function() { // Once the website properly loads
 function draw() { // Render game (clear last frame, draw new one)
   if (c == null) { return; } // If the website hasn't properly loaded yet, get out of this procedure
   
-  c.clearRect(0,0,canv.width,canv.height);
+  c.clearRect(player.x-((screen.width/2)-32),player.y-((screen.height/2)-32),player.x+((screen.width/2)+32),player.y+((screen.height/2)+32)); // Clear last frame
   player.draw();
 };
 
