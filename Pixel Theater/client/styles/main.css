@@ -4,4 +4,6 @@ body {
 }
 #canvas {
   z-index: 1;
+  background-image:url('https://i.imgur.com/37wXosj.jpg');
+  background-size: 500px;
 }
