@@ -30,18 +30,28 @@ io.on('connection', (sock) => { // Main listener
   sock.on('initCL', () => { // Called on each client connection
     date = new Date();
     console.log('['+colors.gray(date.getHours()+':'+date.getMinutes()+':'+date.getSeconds())+'] '+colors.green.bold(sock.id)+colors.white.bold(' connected'));
-    sock.emit('CLid', sock.id); // Give player their id
-    players.push(sock.id);
+    var data = {
+      'id' : sock.id,
+      'x' : null,
+      'y' : null
+    };
+    players.push(data);
+    sock.emit('CLid', [sock.id, players]); // Give player their id
+    io.emit('playerconnect', [data, sock.id]);
   });
   sock.on('disconnect', (reason) => { // Called on client disconnect
     date = new Date();
     console.log('['+colors.gray(date.getHours()+':'+date.getMinutes()+':'+date.getSeconds())+'] '+colors.red.bold(sock.id)+colors.white.bold(' disconnected: ')+colors.white.bold(reason));
-    var i = players.indexOf(sock.id);
+    var i = players.findIndex(player => player.id==sock.id);
     if (i !== -1) {players.splice(i, 1);} // Remove player from players[]
+    io.emit('playerdisconnect', sock.id);
   });
 
-  sock.on('requestMovement', (d) => { // When a player requests movement
-    sock.emit('receiveMovement', d); // Accept movement and send to all players for updates
+  sock.on('applyMovement', (d) => { // When a player requests movement
+    players[players.findIndex(player => player.id==sock.id)].x = d[1];
+    players[players.findIndex(player => player.id==sock.id)].y = d[2];
+    io.emit('receiveMovement', d); // Accept movement and send to all players for updates
+    console.log(players);
   });
 });
 
