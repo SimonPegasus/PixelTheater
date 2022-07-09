@@ -26,16 +26,20 @@ server.on('error', (err) => { // On error
 
 // Main
 players = [];
-io.on('connection', (sock) => { // Called on each client connection
-  sock.on('initCL', () => {
+io.on('connection', (sock) => { // Main listener
+  sock.on('initCL', () => { // Called on each client connection
+    date = new Date();
+    console.log('['+colors.gray(date.getHours()+':'+date.getMinutes()+':'+date.getSeconds())+'] '+colors.green.bold(sock.id)+colors.white.bold(' connected'));
     sock.emit('CLid', sock.id); // Give player their id
     players.push(sock.id);
   });
-  sock.on('disconnect', (reason) => { // Callon on client disconnect
-    console.log(sock.id+' disconnected: '+reason);
+  sock.on('disconnect', (reason) => { // Called on client disconnect
+    date = new Date();
+    console.log('['+colors.gray(date.getHours()+':'+date.getMinutes()+':'+date.getSeconds())+'] '+colors.red.bold(sock.id)+colors.white.bold(' disconnected: ')+colors.white.bold(reason));
     var i = players.indexOf(sock.id);
     if (i !== -1) {players.splice(i, 1);} // Remove player from players[]
   });
+
   sock.on('requestMovement', (d) => { // When a player requests movement
     sock.emit('receiveMovement', d); // Accept movement and send to all players for updates
   });
