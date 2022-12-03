@@ -1,4 +1,4 @@
-const port = 80; // Server port (default 80)
+const port = 81; // Server port (default 80)
 const version = 'Pixel Theater 0.0.0'; // Version
 
 const http = require('http');
